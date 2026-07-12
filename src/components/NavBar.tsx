@@ -88,7 +88,7 @@ function MobileMenu({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background sm:hidden"
+            className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background/80 backdrop-blur-md sm:hidden"
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-4">
               <span className="text-sm font-semibold tracking-[0.15em] uppercase">
