@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 const links = [
@@ -61,9 +62,100 @@ function CloseIcon() {
   );
 }
 
+function MobileMenu({
+  open,
+  onClose,
+  pathname,
+}: {
+  open: boolean;
+  onClose: () => void;
+  pathname: string;
+}) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            onClick={onClose}
+            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm sm:hidden"
+          />
+          <motion.aside
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background sm:hidden"
+          >
+            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+              <span className="text-sm font-semibold tracking-[0.15em] uppercase">
+                Menu
+              </span>
+              <button
+                type="button"
+                aria-label="Close menu"
+                onClick={onClose}
+                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted"
+              >
+                <CloseIcon />
+              </button>
+            </div>
+
+            <nav className="flex flex-1 flex-col gap-1 px-4 py-6 text-base">
+              {links.map((link) => {
+                const active = pathname.startsWith(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={onClose}
+                    className={`rounded-lg px-3 py-3 transition-colors hover:bg-surface hover:text-foreground ${
+                      active ? "text-foreground" : "text-muted"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            <div className="flex items-center justify-center gap-10 border-t border-border px-6 py-5">
+              <button
+                type="button"
+                aria-label="Log in"
+                className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+              >
+                <UserIcon />
+                <span>Log in</span>
+              </button>
+              <button
+                type="button"
+                aria-label="Cart"
+                className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+              >
+                <CartIcon />
+                <span>Cart (0)</span>
+              </button>
+            </div>
+          </motion.aside>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}
+
 export default function NavBar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only mount check, required for the portal target (document.body) to exist.
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -142,78 +234,15 @@ export default function NavBar() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              onClick={() => setOpen(false)}
-              className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm sm:hidden"
-            />
-            <motion.aside
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background sm:hidden"
-            >
-              <div className="flex items-center justify-between border-b border-border px-6 py-4">
-                <span className="text-sm font-semibold tracking-[0.15em] uppercase">
-                  Menu
-                </span>
-                <button
-                  type="button"
-                  aria-label="Close menu"
-                  onClick={() => setOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted"
-                >
-                  <CloseIcon />
-                </button>
-              </div>
-
-              <nav className="flex flex-1 flex-col gap-1 px-4 py-6 text-base">
-                {links.map((link) => {
-                  const active = pathname.startsWith(link.href);
-                  return (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className={`rounded-lg px-3 py-3 transition-colors hover:bg-surface hover:text-foreground ${
-                        active ? "text-foreground" : "text-muted"
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  );
-                })}
-              </nav>
-
-              <div className="flex items-center gap-6 border-t border-border px-6 py-5">
-                <button
-                  type="button"
-                  aria-label="Log in"
-                  className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
-                >
-                  <UserIcon />
-                  <span>Log in</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label="Cart"
-                  className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
-                >
-                  <CartIcon />
-                  <span>Cart (0)</span>
-                </button>
-              </div>
-            </motion.aside>
-          </>
+      {mounted &&
+        createPortal(
+          <MobileMenu
+            open={open}
+            onClose={() => setOpen(false)}
+            pathname={pathname}
+          />,
+          document.body,
         )}
-      </AnimatePresence>
     </header>
   );
 }
