@@ -47,21 +47,6 @@ function CartIcon() {
   );
 }
 
-function CloseIcon() {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.6}
-      strokeLinecap="round"
-      className="h-[18px] w-[18px]"
-    >
-      <path d="M5 5l14 14M19 5L5 19" />
-    </svg>
-  );
-}
-
 function MobileMenu({
   open,
   onClose,
@@ -90,20 +75,6 @@ function MobileMenu({
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background/80 backdrop-blur-md sm:hidden"
           >
-            <div className="flex items-center justify-between border-b border-border px-6 py-4">
-              <span className="text-sm font-semibold tracking-[0.15em] uppercase">
-                Menu
-              </span>
-              <button
-                type="button"
-                aria-label="Close menu"
-                onClick={onClose}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted"
-              >
-                <CloseIcon />
-              </button>
-            </div>
-
             <nav className="flex flex-1 flex-col gap-1 px-4 py-6 text-base">
               {links.map((link) => {
                 const active = pathname.startsWith(link.href);
