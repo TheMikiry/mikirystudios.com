@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const links = [
@@ -46,9 +46,31 @@ function CartIcon() {
   );
 }
 
+function CloseIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      className="h-[18px] w-[18px]"
+    >
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  );
+}
+
 export default function NavBar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
@@ -102,7 +124,7 @@ export default function NavBar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full border border-border sm:hidden"
+            className="relative z-[70] flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full border border-border sm:hidden"
           >
             <motion.span
               animate={{ rotate: open ? 45 : 0, y: open ? 5 : 0 }}
@@ -122,29 +144,59 @@ export default function NavBar() {
 
       <AnimatePresence>
         {open && (
-          <motion.nav
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden border-b border-border sm:hidden"
-          >
-            <div className="flex flex-col gap-1 px-6 py-4 text-sm">
-              {links.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={() => setOpen(false)}
+              className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm sm:hidden"
+            />
+            <motion.aside
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background sm:hidden"
+            >
+              <div className="flex items-center justify-between border-b border-border px-6 py-4">
+                <span className="text-sm font-semibold tracking-[0.15em] uppercase">
+                  Menu
+                </span>
+                <button
+                  type="button"
+                  aria-label="Close menu"
                   onClick={() => setOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-muted transition-colors hover:bg-surface hover:text-foreground"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-muted"
                 >
-                  {link.label}
-                </Link>
-              ))}
-              <div className="mt-2 flex items-center gap-4 border-t border-border px-3 pt-4">
+                  <CloseIcon />
+                </button>
+              </div>
+
+              <nav className="flex flex-1 flex-col gap-1 px-4 py-6 text-base">
+                {links.map((link) => {
+                  const active = pathname.startsWith(link.href);
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={`rounded-lg px-3 py-3 transition-colors hover:bg-surface hover:text-foreground ${
+                        active ? "text-foreground" : "text-muted"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              <div className="flex items-center gap-6 border-t border-border px-6 py-5">
                 <button
                   type="button"
                   aria-label="Log in"
-                  className="flex items-center gap-2 text-muted"
+                  className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
                 >
                   <UserIcon />
                   <span>Log in</span>
@@ -152,14 +204,14 @@ export default function NavBar() {
                 <button
                   type="button"
                   aria-label="Cart"
-                  className="flex items-center gap-2 text-muted"
+                  className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
                 >
                   <CartIcon />
                   <span>Cart (0)</span>
                 </button>
               </div>
-            </div>
-          </motion.nav>
+            </motion.aside>
+          </>
         )}
       </AnimatePresence>
     </header>
