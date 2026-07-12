@@ -77,11 +77,11 @@ function MobileMenu({
             className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm sm:hidden"
           />
           <motion.aside
-            initial={{ x: "100%" }}
+            initial={{ x: "-100%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            exit={{ x: "-100%" }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background/80 backdrop-blur-md sm:hidden"
+            className="fixed inset-y-0 left-0 z-[65] flex w-72 max-w-[82vw] flex-col border-r border-border bg-background/80 backdrop-blur-md sm:hidden"
           >
             <nav className="flex flex-1 flex-col gap-1 px-6 py-8 text-xl font-semibold">
               {links.map((link) => {
@@ -101,26 +101,17 @@ function MobileMenu({
               })}
             </nav>
 
-            <div className="flex items-center justify-between border-t border-border px-6 py-6">
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-background"
-              >
-                <UserIcon className="h-4 w-4" />
-                Login
-              </button>
-              <div className="flex items-center gap-4">
-                {socials.map(({ label, href, Icon }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    aria-label={label}
-                    className="text-muted transition-colors hover:text-foreground"
-                  >
-                    <Icon className="h-5 w-5" />
-                  </a>
-                ))}
-              </div>
+            <div className="flex items-center justify-center gap-6 border-t border-border px-6 py-6">
+              {socials.map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="text-muted transition-colors hover:text-foreground"
+                >
+                  <Icon className="h-5 w-5" />
+                </a>
+              ))}
             </div>
           </motion.aside>
         </>
