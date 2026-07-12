@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { XIcon, InstagramIcon, YouTubeIcon, DiscordIcon } from "./SocialIcons";
 
 const links = [
   { href: "/portfolio", label: "Portfolio" },
@@ -12,14 +13,21 @@ const links = [
   { href: "/about", label: "About" },
 ];
 
-function UserIcon() {
+const socials = [
+  { label: "X", href: "#", Icon: XIcon },
+  { label: "Instagram", href: "#", Icon: InstagramIcon },
+  { label: "YouTube", href: "#", Icon: YouTubeIcon },
+  { label: "Discord", href: "#", Icon: DiscordIcon },
+];
+
+function UserIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
       strokeWidth={1.6}
-      className="h-[18px] w-[18px]"
+      {...props}
     >
       <circle cx="12" cy="8" r="3.4" />
       <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" strokeLinecap="round" />
@@ -27,14 +35,14 @@ function UserIcon() {
   );
 }
 
-function CartIcon() {
+function CartIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
       strokeWidth={1.6}
-      className="h-[18px] w-[18px]"
+      {...props}
     >
       <circle cx="9" cy="20.5" r="1" fill="currentColor" stroke="none" />
       <circle cx="18" cy="20.5" r="1" fill="currentColor" stroke="none" />
@@ -75,7 +83,7 @@ function MobileMenu({
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-y-0 right-0 z-[65] flex w-72 max-w-[82vw] flex-col border-l border-border bg-background/80 backdrop-blur-md sm:hidden"
           >
-            <nav className="flex flex-1 flex-col gap-1 px-4 py-6 text-base">
+            <nav className="flex flex-1 flex-col gap-1 px-6 py-8 text-xl font-semibold">
               {links.map((link) => {
                 const active = pathname.startsWith(link.href);
                 return (
@@ -83,8 +91,8 @@ function MobileMenu({
                     key={link.href}
                     href={link.href}
                     onClick={onClose}
-                    className={`rounded-lg px-3 py-3 transition-colors hover:bg-surface hover:text-foreground ${
-                      active ? "text-foreground" : "text-muted"
+                    className={`rounded-lg py-3 transition-colors hover:text-accent ${
+                      active ? "text-foreground" : "text-foreground/90"
                     }`}
                   >
                     {link.label}
@@ -93,23 +101,26 @@ function MobileMenu({
               })}
             </nav>
 
-            <div className="flex items-center justify-center gap-10 border-t border-border px-6 py-5">
+            <div className="flex items-center justify-between border-t border-border px-6 py-6">
               <button
                 type="button"
-                aria-label="Log in"
-                className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
+                className="flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-background"
               >
-                <UserIcon />
-                <span>Log in</span>
+                <UserIcon className="h-4 w-4" />
+                Login
               </button>
-              <button
-                type="button"
-                aria-label="Cart"
-                className="flex items-center gap-2 text-sm text-muted transition-colors hover:text-foreground"
-              >
-                <CartIcon />
-                <span>Cart (0)</span>
-              </button>
+              <div className="flex items-center gap-4">
+                {socials.map(({ label, href, Icon }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="text-muted transition-colors hover:text-foreground"
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                ))}
+              </div>
             </div>
           </motion.aside>
         </>
@@ -135,73 +146,99 @@ export default function NavBar() {
     };
   }, [open]);
 
+  const logo = (
+    <Link
+      href="/"
+      onClick={() => setOpen(false)}
+      className="text-sm font-semibold tracking-[0.15em] uppercase"
+    >
+      mikiry<span className="text-accent">studios</span>
+    </Link>
+  );
+
+  const hamburger = (
+    <button
+      type="button"
+      aria-label={open ? "Close menu" : "Open menu"}
+      aria-expanded={open}
+      onClick={() => setOpen((v) => !v)}
+      className="relative z-[70] flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full border border-border"
+    >
+      <motion.span
+        animate={{ rotate: open ? 45 : 0, y: open ? 5 : 0 }}
+        className="h-px w-4 bg-foreground"
+      />
+      <motion.span
+        animate={{ opacity: open ? 0 : 1 }}
+        className="h-px w-4 bg-foreground"
+      />
+      <motion.span
+        animate={{ rotate: open ? -45 : 0, y: open ? -5 : 0 }}
+        className="h-px w-4 bg-foreground"
+      />
+    </button>
+  );
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto grid max-w-6xl grid-cols-2 items-center gap-4 px-6 py-4 sm:grid-cols-[1fr_auto_1fr]">
-        <Link
-          href="/"
-          onClick={() => setOpen(false)}
-          className="text-sm font-semibold tracking-[0.15em] uppercase"
-        >
-          mikiry<span className="text-accent">studios</span>
-        </Link>
+      <div className="mx-auto max-w-6xl px-6 py-4">
+        {/* Desktop / tablet */}
+        <div className="hidden items-center gap-4 sm:grid sm:grid-cols-[1fr_auto_1fr]">
+          {logo}
 
-        <nav className="hidden items-center gap-8 text-sm text-muted sm:flex">
-          {links.map((link) => {
-            const active = pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`transition-colors hover:text-foreground ${
-                  active ? "text-foreground" : ""
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-        </nav>
+          <nav className="flex items-center gap-8 text-sm text-muted">
+            {links.map((link) => {
+              const active = pathname.startsWith(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`transition-colors hover:text-foreground ${
+                    active ? "text-foreground" : ""
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="flex items-center justify-end gap-4">
-          <button
-            type="button"
-            aria-label="Log in"
-            className="hidden text-muted transition-colors hover:text-foreground sm:block"
-          >
-            <UserIcon />
-          </button>
-          <button
-            type="button"
-            aria-label="Cart"
-            className="relative hidden text-muted transition-colors hover:text-foreground sm:block"
-          >
-            <CartIcon />
-            <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
-              0
-            </span>
-          </button>
+          <div className="flex items-center justify-end gap-4">
+            <button
+              type="button"
+              aria-label="Log in"
+              className="text-muted transition-colors hover:text-foreground"
+            >
+              <UserIcon className="h-[18px] w-[18px]" />
+            </button>
+            <button
+              type="button"
+              aria-label="Cart"
+              className="relative text-muted transition-colors hover:text-foreground"
+            >
+              <CartIcon className="h-[18px] w-[18px]" />
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
+                0
+              </span>
+            </button>
+          </div>
+        </div>
 
-          <button
-            type="button"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-            className="relative z-[70] flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full border border-border sm:hidden"
-          >
-            <motion.span
-              animate={{ rotate: open ? 45 : 0, y: open ? 5 : 0 }}
-              className="h-px w-4 bg-foreground"
-            />
-            <motion.span
-              animate={{ opacity: open ? 0 : 1 }}
-              className="h-px w-4 bg-foreground"
-            />
-            <motion.span
-              animate={{ rotate: open ? -45 : 0, y: open ? -5 : 0 }}
-              className="h-px w-4 bg-foreground"
-            />
-          </button>
+        {/* Mobile */}
+        <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:hidden">
+          {hamburger}
+          <div className="justify-self-center">{logo}</div>
+          <div className="flex items-center justify-self-end gap-4">
+            <button type="button" aria-label="Log in" className="text-muted">
+              <UserIcon className="h-[18px] w-[18px]" />
+            </button>
+            <button type="button" aria-label="Cart" className="relative text-muted">
+              <CartIcon className="h-[18px] w-[18px]" />
+              <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
+                0
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
