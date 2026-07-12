@@ -11,12 +11,18 @@ export default function ProjectCard({ project }: { project: Project }) {
       transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] as const }}
       className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-surface"
     >
-      <div className="relative aspect-[3/4] overflow-hidden">
+      <div className="relative aspect-[2/3] overflow-hidden">
         <PlaceholderCover
           seed={project.slug}
+          title={project.title}
           label={project.kind}
           className="h-full w-full transition-transform duration-500 group-hover:scale-105"
         />
+        {project.status === "announced" && (
+          <span className="absolute left-3 top-3 z-10 rounded-full border border-accent/50 bg-background/70 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.15em] text-accent backdrop-blur-sm">
+            Announced
+          </span>
+        )}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-4">
         <div className="flex items-center justify-between gap-2">
@@ -28,11 +34,6 @@ export default function ProjectCard({ project }: { project: Project }) {
         <p className="text-xs text-muted">
           {project.role} — {project.studio}
         </p>
-        {project.status === "announced" && (
-          <span className="mt-1 w-fit rounded-full border border-accent/40 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-accent">
-            Announced
-          </span>
-        )}
         <p className="mt-2 text-xs leading-relaxed text-muted">
           {project.description}
         </p>

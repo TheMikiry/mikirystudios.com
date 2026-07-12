@@ -20,7 +20,7 @@ export default async function ToolPage({
     <div className="mx-auto max-w-3xl px-6 py-20">
       <Reveal>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-          Tools
+          Store
         </p>
         <h1 className="mt-3 text-3xl font-semibold text-balance sm:text-4xl">
           {tool.name}

@@ -1,54 +1,34 @@
-"use client";
-
 import Link from "next/link";
-import { motion, type Variants } from "framer-motion";
-
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-const container: Variants = {
-  hidden: {},
-  show: {
-    transition: { staggerChildren: 0.12, delayChildren: 0.1 },
-  },
-};
-
-const item: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: EASE },
-  },
-};
 
 export default function Hero() {
   return (
-    <motion.section
-      variants={container}
-      initial="hidden"
-      animate="show"
-      className="flex flex-col gap-6"
-    >
-      <motion.p
-        variants={item}
-        className="font-mono text-xs uppercase tracking-[0.2em] text-muted"
+    <section className="flex flex-col gap-6">
+      <p
+        className="animate-reveal font-mono text-xs uppercase tracking-[0.2em] text-muted"
+        style={{ animationDelay: "0.05s" }}
       >
         Rigger &amp; Technical Director
-      </motion.p>
-      <motion.h1
-        variants={item}
-        className="max-w-2xl text-4xl font-semibold leading-tight text-balance sm:text-5xl md:text-6xl"
+      </p>
+      <h1
+        className="animate-reveal max-w-2xl text-4xl font-semibold leading-tight text-balance sm:text-5xl md:text-6xl"
+        style={{ animationDelay: "0.15s" }}
       >
         Building characters, and the tools that build them.
-      </motion.h1>
-      <motion.p variants={item} className="max-w-xl text-muted">
+      </h1>
+      <p
+        className="animate-reveal max-w-xl text-muted"
+        style={{ animationDelay: "0.25s" }}
+      >
         I&apos;m Daniel Cedeño — I rig for games and animation, and I build
         the pipeline tools that make that work faster. Starting with mkrHub,
         a free tool shelf for Maya artists.
-      </motion.p>
-      <motion.div variants={item} className="flex flex-wrap gap-4 pt-2">
+      </p>
+      <div
+        className="animate-reveal flex flex-wrap gap-4 pt-2"
+        style={{ animationDelay: "0.35s" }}
+      >
         <Link
-          href="/tools"
+          href="/store/mkrhub"
           className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.03] active:scale-[0.98]"
         >
           Get mkrHub
@@ -59,7 +39,7 @@ export default function Hero() {
         >
           View portfolio
         </Link>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }

@@ -53,7 +53,7 @@ export default function Home() {
           </h2>
           <p className="max-w-lg text-sm text-muted">{mkrhub.description}</p>
           <Link
-            href="/tools/mkrhub"
+            href="/store/mkrhub"
             className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.03] active:scale-[0.98]"
           >
             Get it — pay what you want
@@ -70,7 +70,7 @@ export default function Home() {
             </p>
           </div>
           <div>
-            <h2 className="mb-2 text-sm font-semibold">Tools</h2>
+            <h2 className="mb-2 text-sm font-semibold">Store</h2>
             <p className="text-sm text-muted">
               mkrHub and the individual tools and packs that plug into it.
             </p>
@@ -78,7 +78,7 @@ export default function Home() {
           <div>
             <h2 className="mb-2 text-sm font-semibold">About</h2>
             <p className="text-sm text-muted">
-              Background, experience, and how to get in touch.
+              Background, experience, socials, and how to get in touch.
             </p>
           </div>
         </section>

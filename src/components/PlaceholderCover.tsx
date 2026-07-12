@@ -18,10 +18,12 @@ function hashSeed(seed: string) {
 
 export default function PlaceholderCover({
   seed,
+  title,
   label,
   className = "",
 }: {
   seed: string;
+  title?: string;
   label?: string;
   className?: string;
 }) {
@@ -30,21 +32,29 @@ export default function PlaceholderCover({
 
   return (
     <div
-      className={`relative flex items-center justify-center overflow-hidden ${className}`}
+      className={`relative flex flex-col justify-end overflow-hidden ${className}`}
       style={{
         backgroundImage: `linear-gradient(${angle}deg, ${palette[0]}, ${palette[1]})`,
       }}
     >
       <div
-        className="pointer-events-none absolute inset-0 opacity-20 mix-blend-overlay"
+        className="pointer-events-none absolute inset-0 opacity-25 mix-blend-overlay"
         style={{
           backgroundImage:
-            "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.4), transparent 40%), radial-gradient(circle at 80% 70%, rgba(0,0,0,0.5), transparent 45%)",
+            "radial-gradient(circle at 20% 15%, rgba(255,255,255,0.45), transparent 40%), radial-gradient(circle at 80% 75%, rgba(0,0,0,0.55), transparent 45%)",
         }}
       />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/10" />
+
       {label && (
-        <span className="relative z-10 px-4 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-white/70">
+        <span className="absolute right-3 top-3 z-10 rounded-full bg-black/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
           {label}
+        </span>
+      )}
+
+      {title && (
+        <span className="relative z-10 p-4 text-lg font-semibold leading-tight text-balance text-white/95">
+          {title}
         </span>
       )}
     </div>

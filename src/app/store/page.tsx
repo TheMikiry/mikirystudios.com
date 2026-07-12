@@ -2,12 +2,12 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { tools } from "@/lib/tools";
 
-export default function ToolsPage() {
+export default function StorePage() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-20">
       <Reveal>
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-          Tools
+          Store
         </p>
         <h1 className="mt-3 text-3xl font-semibold text-balance sm:text-4xl">
           mkrHub &amp; tool catalog
@@ -23,7 +23,7 @@ export default function ToolsPage() {
           <Reveal key={tool.slug} delay={i * 0.08}>
             {tool.status === "available" ? (
               <Link
-                href={`/tools/${tool.slug}`}
+                href={`/store/${tool.slug}`}
                 className="group flex h-full flex-col justify-between rounded-2xl border border-border bg-surface p-6 transition-colors hover:border-accent/50"
               >
                 <div>

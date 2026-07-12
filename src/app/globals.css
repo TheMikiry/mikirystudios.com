@@ -35,6 +35,23 @@ body {
   color: var(--background);
 }
 
+/* Pure-CSS entrance animation — runs without JS, so content is never
+   stuck invisible if client-side JS is slow, blocked, or fails. */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal {
+  animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
