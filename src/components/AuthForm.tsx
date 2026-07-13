@@ -80,6 +80,21 @@ export default function AuthForm() {
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8">
+      <button
+        type="button"
+        onClick={handleGoogle}
+        className="flex items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium transition-colors hover:border-foreground"
+      >
+        <GoogleIcon />
+        Continue with Google
+      </button>
+
+      <div className="flex items-center gap-3 text-xs text-muted">
+        <span className="h-px flex-1 bg-border" />
+        or use email
+        <span className="h-px flex-1 bg-border" />
+      </div>
+
       <div className="flex rounded-full border border-border p-1 text-sm">
         <button
           type="button"
@@ -103,21 +118,6 @@ export default function AuthForm() {
         >
           Create account
         </button>
-      </div>
-
-      <button
-        type="button"
-        onClick={handleGoogle}
-        className="flex items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium transition-colors hover:border-foreground"
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
-
-      <div className="flex items-center gap-3 text-xs text-muted">
-        <span className="h-px flex-1 bg-border" />
-        or
-        <span className="h-px flex-1 bg-border" />
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
