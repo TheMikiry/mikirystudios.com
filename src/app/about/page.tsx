@@ -23,11 +23,11 @@ export default function AboutPage() {
       </Reveal>
 
       <div className="mt-10 flex flex-col gap-8 sm:flex-row">
-        <Reveal delay={0.05} className="relative shrink-0">
+        <Reveal delay={0.05} className="relative w-full shrink-0 sm:w-[220px]">
           <PlaceholderCover
             seed="about-portrait"
             label="Portrait"
-            className="aspect-[4/5] w-full max-w-[220px] rounded-2xl"
+            className="aspect-[4/5] w-full rounded-2xl"
           />
           <FrameCorners />
         </Reveal>
