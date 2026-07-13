@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { XIcon, InstagramIcon, YouTubeIcon, DiscordIcon } from "./SocialIcons";
+import CartDrawer from "./CartDrawer";
 
 const links = [
   { href: "/portfolio", label: "Portfolio" },
@@ -123,6 +124,7 @@ function MobileMenu({
 export default function NavBar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -131,11 +133,11 @@ export default function NavBar() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
+    document.body.style.overflow = open || cartOpen ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);
+  }, [open, cartOpen]);
 
   const logo = (
     <Link
@@ -205,6 +207,7 @@ export default function NavBar() {
             <button
               type="button"
               aria-label="Cart"
+              onClick={() => setCartOpen(true)}
               className="relative text-muted transition-colors hover:text-foreground"
             >
               <CartIcon className="h-[18px] w-[18px]" />
@@ -223,7 +226,12 @@ export default function NavBar() {
             <Link href="/account" aria-label="Account" className="text-muted">
               <UserIcon className="h-[18px] w-[18px]" />
             </Link>
-            <button type="button" aria-label="Cart" className="relative text-muted">
+            <button
+              type="button"
+              aria-label="Cart"
+              onClick={() => setCartOpen(true)}
+              className="relative text-muted"
+            >
               <CartIcon className="h-[18px] w-[18px]" />
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
                 0
@@ -235,11 +243,14 @@ export default function NavBar() {
 
       {mounted &&
         createPortal(
-          <MobileMenu
-            open={open}
-            onClose={() => setOpen(false)}
-            pathname={pathname}
-          />,
+          <>
+            <MobileMenu
+              open={open}
+              onClose={() => setOpen(false)}
+              pathname={pathname}
+            />
+            <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+          </>,
           document.body,
         )}
     </header>
