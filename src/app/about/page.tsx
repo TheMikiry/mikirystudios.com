@@ -56,7 +56,7 @@ export default function AboutPage() {
         </Reveal>
       </div>
 
-      <section className="mt-20 border-t border-border pt-12">
+      <section id="contact" className="mt-20 scroll-mt-24 border-t border-border pt-12">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
             Contact
