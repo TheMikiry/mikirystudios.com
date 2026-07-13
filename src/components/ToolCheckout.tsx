@@ -1,28 +1,64 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+import AuthForm from "./AuthForm";
 
 const PRESETS = [0, 5, 10, 25];
 
-export default function ToolCheckout({ toolName }: { toolName: string }) {
+export default function ToolCheckout({
+  toolSlug,
+  toolName,
+}: {
+  toolSlug: string;
+  toolName: string;
+}) {
+  const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [checkedAuth, setCheckedAuth] = useState(false);
   const [amount, setAmount] = useState(0);
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [claimed, setClaimed] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Enter a valid email to get your download link.");
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setCheckedAuth(true);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => setUser(session?.user ?? null),
+    );
+    return () => listener.subscription.unsubscribe();
+  }, [supabase]);
+
+  async function handleClaim() {
+    if (!user) return;
+    setSubmitting(true);
+    setError(null);
+    const { error } = await supabase.from("orders").insert({
+      user_id: user.id,
+      product_slug: toolSlug,
+      amount_cents: Math.round(amount * 100),
+    });
+    setSubmitting(false);
+    if (error) {
+      setError(error.message);
       return;
     }
-    setError(null);
-    // Placeholder: no backend wired yet. Stripe + Supabase handoff goes here.
-    setSubmitted(true);
+    setClaimed(true);
   }
 
-  if (submitted) {
+  if (!checkedAuth) {
+    return (
+      <div className="h-48 animate-pulse rounded-2xl border border-border bg-surface" />
+    );
+  }
+
+  if (claimed) {
     return (
       <motion.div
         initial={{ opacity: 0, y: 8 }}
@@ -30,21 +66,37 @@ export default function ToolCheckout({ toolName }: { toolName: string }) {
         className="rounded-2xl border border-accent/40 bg-accent/10 p-6 text-sm"
       >
         <p className="font-medium text-foreground">
-          Thanks — check {email} for your download link.
+          {toolName} is in your account now.
         </p>
         <p className="mt-1 text-muted">
-          (Development placeholder — email delivery isn&apos;t connected
-          yet.)
+          (Development placeholder — the actual file delivery isn&apos;t
+          wired up yet.)
         </p>
+        <Link
+          href="/account"
+          className="mt-3 inline-block text-sm font-medium text-accent"
+        >
+          View in your account →
+        </Link>
       </motion.div>
     );
   }
 
+  if (!user) {
+    return (
+      <div className="flex flex-col gap-4">
+        <p className="text-sm text-muted">
+          Sign in or create a free account to download {toolName} — this
+          also gives you redownloads and order history for anything else you
+          get from the store.
+        </p>
+        <AuthForm />
+      </div>
+    );
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8"
-    >
+    <div className="flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8">
       <div>
         <p className="font-mono text-xs uppercase tracking-wide text-muted">
           Name your price
@@ -82,46 +134,35 @@ export default function ToolCheckout({ toolName }: { toolName: string }) {
         </p>
       </div>
 
-      <div>
-        <label
-          htmlFor="email"
-          className="font-mono text-xs uppercase tracking-wide text-muted"
-        >
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
-          className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
-        />
-        <p className="mt-2 text-xs text-muted">
-          Used to send your download link, and occasional mkrHub updates. No
-          spam.
-        </p>
-        <AnimatePresence>
-          {error && (
-            <motion.p
-              initial={{ opacity: 0, y: -4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="mt-2 text-xs text-red-400"
-            >
-              {error}
-            </motion.p>
-          )}
-        </AnimatePresence>
-      </div>
+      <p className="text-xs text-muted">
+        Downloading as <span className="text-foreground">{user.email}</span>
+      </p>
+
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="text-xs text-red-400"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       <button
-        type="submit"
-        className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98]"
+        type="button"
+        onClick={handleClaim}
+        disabled={submitting}
+        className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
       >
-        {amount === 0 ? "Get it free" : `Pay $${amount} & download`}
+        {submitting
+          ? "Please wait…"
+          : amount === 0
+            ? "Get it free"
+            : `Pay $${amount} & download`}
       </button>
-    </form>
+    </div>
   );
 }

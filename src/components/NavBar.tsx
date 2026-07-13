@@ -195,13 +195,13 @@ export default function NavBar() {
           </nav>
 
           <div className="flex items-center justify-end gap-4">
-            <button
-              type="button"
-              aria-label="Log in"
+            <Link
+              href="/account"
+              aria-label="Account"
               className="text-muted transition-colors hover:text-foreground"
             >
               <UserIcon className="h-[18px] w-[18px]" />
-            </button>
+            </Link>
             <button
               type="button"
               aria-label="Cart"
@@ -220,9 +220,9 @@ export default function NavBar() {
           {hamburger}
           <div className="justify-self-center">{logo}</div>
           <div className="flex items-center justify-self-end gap-4">
-            <button type="button" aria-label="Log in" className="text-muted">
+            <Link href="/account" aria-label="Account" className="text-muted">
               <UserIcon className="h-[18px] w-[18px]" />
-            </button>
+            </Link>
             <button type="button" aria-label="Cart" className="relative text-muted">
               <CartIcon className="h-[18px] w-[18px]" />
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">

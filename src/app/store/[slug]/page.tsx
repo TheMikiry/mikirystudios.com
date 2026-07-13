@@ -31,7 +31,7 @@ export default async function ToolPage({
 
       <Reveal delay={0.1} className="mt-10">
         {tool.pricingModel === "pay-what-you-want" ? (
-          <ToolCheckout toolName={tool.name} />
+          <ToolCheckout toolSlug={tool.slug} toolName={tool.name} />
         ) : (
           <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted">
             Not available yet — check back soon.
