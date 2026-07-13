@@ -8,7 +8,7 @@ export default function LoginPage() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           Account
         </p>
-        <h1 className="mt-3 text-3xl font-semibold text-balance">
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-balance">
           Sign in
         </h1>
         <p className="mt-3 text-sm text-muted">

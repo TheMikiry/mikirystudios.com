@@ -9,7 +9,7 @@ export default function PortfolioPage() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           Portfolio
         </p>
-        <h1 className="mt-3 text-3xl font-semibold text-balance sm:text-4xl">
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-balance sm:text-5xl">
           Selected work
         </h1>
         <p className="mt-4 max-w-xl text-muted">
@@ -29,7 +29,9 @@ export default function PortfolioPage() {
 
       <section className="mt-24 border-t border-border pt-12">
         <Reveal>
-          <h2 className="text-xl font-semibold">Credits</h2>
+          <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
+            Credits
+          </h2>
           <p className="mt-2 text-sm text-muted">
             Chronological studio and role history.
           </p>

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import Reveal from "@/components/Reveal";
+import FrameCorners from "@/components/FrameCorners";
 import { projects } from "@/lib/projects";
 import { tools } from "@/lib/tools";
 
@@ -19,7 +20,9 @@ export default function Home() {
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
               Selected work
             </p>
-            <h2 className="mt-2 text-2xl font-semibold">Recent projects</h2>
+            <h2 className="mt-2 font-display text-3xl font-bold uppercase tracking-tight">
+              Recent projects
+            </h2>
           </div>
           <Link
             href="/portfolio"
@@ -44,11 +47,12 @@ export default function Home() {
       </section>
 
       <Reveal>
-        <section className="flex flex-col items-start gap-5 rounded-2xl border border-border bg-surface p-8 sm:p-12">
+        <section className="relative flex flex-col items-start gap-5 rounded-2xl border border-border bg-surface p-8 sm:p-12">
+          <FrameCorners />
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-accent">
             {mkrhub.name}
           </p>
-          <h2 className="max-w-md text-2xl font-semibold text-balance sm:text-3xl">
+          <h2 className="max-w-md font-display text-3xl font-bold uppercase tracking-tight text-balance sm:text-4xl">
             {mkrhub.tagline}
           </h2>
           <p className="max-w-lg text-sm text-muted">{mkrhub.description}</p>

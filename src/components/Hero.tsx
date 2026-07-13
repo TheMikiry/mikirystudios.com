@@ -10,7 +10,7 @@ export default function Hero() {
         Rigger &amp; Technical Director
       </p>
       <h1
-        className="animate-reveal max-w-2xl text-4xl font-semibold leading-tight text-balance sm:text-5xl md:text-6xl"
+        className="animate-reveal max-w-2xl font-display text-5xl font-bold uppercase leading-[0.95] tracking-tight text-balance sm:text-6xl md:text-7xl"
         style={{ animationDelay: "0.15s" }}
       >
         Building characters, and the tools that build them.

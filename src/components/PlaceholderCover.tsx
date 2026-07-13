@@ -1,10 +1,10 @@
 const PALETTES = [
-  ["#3a2a45", "#d98a3d"],
-  ["#1f2e3a", "#4fa3a0"],
-  ["#2e1f2a", "#c65a4a"],
-  ["#233225", "#8fae5b"],
-  ["#251f3a", "#8a6fd8"],
-  ["#3a2a1f", "#e0b25a"],
+  ["#2c2138", "#e8b339"],
+  ["#161f2c", "#4f8fe0"],
+  ["#2a1c22", "#c65a4a"],
+  ["#1c2620", "#7fae6b"],
+  ["#1e1a2e", "#8a6fd8"],
+  ["#241d18", "#d99a4e"],
 ] as const;
 
 function hashSeed(seed: string) {
@@ -53,7 +53,7 @@ export default function PlaceholderCover({
       )}
 
       {title && (
-        <span className="relative z-10 p-4 text-lg font-semibold leading-tight text-balance text-white/95">
+        <span className="relative z-10 p-4 font-display text-xl font-bold uppercase leading-[0.95] tracking-tight text-balance text-white/95">
           {title}
         </span>
       )}

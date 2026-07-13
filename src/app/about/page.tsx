@@ -1,6 +1,7 @@
 import Reveal from "@/components/Reveal";
 import PlaceholderCover from "@/components/PlaceholderCover";
 import ContactForm from "@/components/ContactForm";
+import FrameCorners from "@/components/FrameCorners";
 
 const socials = [
   { label: "ArtStation", href: "#" },
@@ -16,18 +17,19 @@ export default function AboutPage() {
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
           About
         </p>
-        <h1 className="mt-3 text-3xl font-semibold text-balance sm:text-4xl">
+        <h1 className="mt-3 font-display text-4xl font-bold uppercase tracking-tight text-balance sm:text-5xl">
           Daniel Cedeño — mikiry
         </h1>
       </Reveal>
 
       <div className="mt-10 flex flex-col gap-8 sm:flex-row">
-        <Reveal delay={0.05} className="shrink-0">
+        <Reveal delay={0.05} className="relative shrink-0">
           <PlaceholderCover
             seed="about-portrait"
             label="Portrait"
             className="aspect-[4/5] w-full max-w-[220px] rounded-2xl"
           />
+          <FrameCorners />
         </Reveal>
 
         <Reveal delay={0.1} className="flex flex-1 flex-col gap-4 text-muted">
@@ -61,7 +63,7 @@ export default function AboutPage() {
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
             Contact
           </p>
-          <h2 className="mt-3 text-2xl font-semibold text-balance">
+          <h2 className="mt-3 font-display text-2xl font-bold uppercase tracking-tight text-balance">
             Get in touch
           </h2>
           <p className="mt-3 max-w-xl text-sm text-muted">

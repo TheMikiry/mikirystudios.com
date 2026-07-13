@@ -36,7 +36,9 @@ export default async function AccountPage() {
 
       <section className="mt-14">
         <Reveal>
-          <h2 className="text-xl font-semibold">Your downloads</h2>
+          <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
+            Your downloads
+          </h2>
           <p className="mt-2 text-sm text-muted">
             Everything you&apos;ve claimed from the store — redownload
             anytime.

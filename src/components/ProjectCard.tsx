@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Project } from "@/lib/projects";
 import PlaceholderCover from "./PlaceholderCover";
+import FrameCorners from "./FrameCorners";
 
 export default function ProjectCard({ project }: { project: Project }) {
   return (
@@ -18,8 +19,9 @@ export default function ProjectCard({ project }: { project: Project }) {
           label={project.kind}
           className="h-full w-full transition-transform duration-500 group-hover:scale-105"
         />
+        <FrameCorners visible={false} />
         {project.status === "announced" && (
-          <span className="absolute left-3 top-3 z-10 rounded-full border border-accent/50 bg-background/70 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.15em] text-accent backdrop-blur-sm">
+          <span className="absolute left-3 top-3 z-10 rounded-full border border-accent-cool/50 bg-background/70 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.15em] text-accent-cool backdrop-blur-sm">
             Announced
           </span>
         )}

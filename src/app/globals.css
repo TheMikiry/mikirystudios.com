@@ -1,12 +1,17 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0d0d10;
-  --surface: #151519;
-  --border: #26262c;
-  --foreground: #ededf0;
-  --muted: #8b8a94;
-  --accent: #d98a3d;
+  /* Cooler, viewport-like near-black rather than flat black */
+  --background: #10131a;
+  --surface: #171b24;
+  --border: #262c3a;
+  --foreground: #eef1f6;
+  --muted: #7d8794;
+  /* Rig control-curve amber — the primary accent */
+  --accent: #e8b339;
+  /* Secondary accent, used sparingly for "announced / upcoming" states —
+     echoes the same L/R/center control-color convention riggers use */
+  --accent-cool: #4f8fe0;
 }
 
 @theme inline {
@@ -16,8 +21,10 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-accent: var(--accent);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent-cool: var(--accent-cool);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
+  --font-display: var(--font-display);
 }
 
 html {
@@ -27,7 +34,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
 }
 
 ::selection {

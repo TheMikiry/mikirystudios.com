@@ -141,7 +141,7 @@ export default function NavBar() {
     <Link
       href="/"
       onClick={() => setOpen(false)}
-      className="text-sm font-semibold tracking-[0.15em] uppercase"
+      className="font-display text-lg font-bold tracking-[0.08em] uppercase"
     >
       mikiry<span className="text-accent">studios</span>
     </Link>
