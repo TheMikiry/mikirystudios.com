@@ -73,7 +73,7 @@ export default function ToolCheckout({
           wired up yet.)
         </p>
         <Link
-          href="/account"
+          href="/account/library"
           className="mt-3 inline-block text-sm font-medium text-accent"
         >
           View in your account →

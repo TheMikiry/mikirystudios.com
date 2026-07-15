@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 function GoogleIcon() {
@@ -27,9 +26,14 @@ function GoogleIcon() {
   );
 }
 
-export default function AuthForm() {
+export default function AuthForm({
+  variant = "card",
+  onSignedIn,
+}: {
+  variant?: "card" | "plain";
+  onSignedIn?: () => void;
+}) {
   const supabase = createClient();
-  const router = useRouter();
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -53,8 +57,7 @@ export default function AuthForm() {
         setError(error.message);
         return;
       }
-      router.push("/account");
-      router.refresh();
+      onSignedIn?.();
     } else {
       const { error } = await supabase.auth.signUp({
         email,
@@ -79,7 +82,13 @@ export default function AuthForm() {
   }
 
   return (
-    <div className="flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8">
+    <div
+      className={
+        variant === "card"
+          ? "flex flex-col gap-6 rounded-2xl border border-border bg-surface p-6 sm:p-8"
+          : "flex flex-col gap-5"
+      }
+    >
       <button
         type="button"
         onClick={handleGoogle}
@@ -89,9 +98,9 @@ export default function AuthForm() {
         Continue with Google
       </button>
 
-      <div className="flex items-center gap-3 text-xs text-muted">
+      <div className="flex items-center gap-3 text-sm text-muted">
         <span className="h-px flex-1 bg-border" />
-        or use email
+        or
         <span className="h-px flex-1 bg-border" />
       </div>
 
@@ -122,36 +131,26 @@ export default function AuthForm() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div>
-          <label
-            htmlFor="email"
-            className="font-mono text-xs uppercase tracking-wide text-muted"
-          >
-            Email
-          </label>
           <input
             id="email"
             type="email"
             required
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
           />
         </div>
         <div>
-          <label
-            htmlFor="password"
-            className="font-mono text-xs uppercase tracking-wide text-muted"
-          >
-            Password
-          </label>
           <input
             id="password"
+            placeholder="Password"
             type="password"
             required
             minLength={6}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-2 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
           />
         </div>
 

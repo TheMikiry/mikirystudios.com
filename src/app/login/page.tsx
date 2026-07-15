@@ -1,7 +1,12 @@
+"use client";
+
+import { useRouter } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import AuthForm from "@/components/AuthForm";
 
 export default function LoginPage() {
+  const router = useRouter();
+
   return (
     <div className="mx-auto max-w-md px-6 py-20">
       <Reveal>
@@ -18,7 +23,12 @@ export default function LoginPage() {
       </Reveal>
 
       <Reveal delay={0.1} className="mt-8">
-        <AuthForm />
+        <AuthForm
+          onSignedIn={() => {
+            router.push("/account");
+            router.refresh();
+          }}
+        />
       </Reveal>
     </div>
   );

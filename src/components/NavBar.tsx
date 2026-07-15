@@ -7,6 +7,7 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { XIcon, InstagramIcon, YouTubeIcon, DiscordIcon } from "./SocialIcons";
 import CartDrawer from "./CartDrawer";
+import AccountMenu from "./AccountMenu";
 
 const links = [
   { href: "/portfolio", label: "Portfolio" },
@@ -20,21 +21,6 @@ const socials = [
   { label: "YouTube", href: "#", Icon: YouTubeIcon },
   { label: "Discord", href: "#", Icon: DiscordIcon },
 ];
-
-function UserIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.6}
-      {...props}
-    >
-      <circle cx="12" cy="8" r="3.4" />
-      <path d="M4.5 20c1.4-3.6 4.4-5.5 7.5-5.5s6.1 1.9 7.5 5.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 function CartIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -143,7 +129,7 @@ export default function NavBar() {
     <Link
       href="/"
       onClick={() => setOpen(false)}
-      className="font-display text-lg font-bold tracking-[0.08em] uppercase"
+      className="font-display text-2xl font-bold tracking-[0.08em] uppercase"
     >
       mikiry<span className="text-accent">studios</span>
     </Link>
@@ -179,7 +165,7 @@ export default function NavBar() {
         <div className="hidden items-center gap-4 sm:grid sm:grid-cols-[1fr_auto_1fr]">
           {logo}
 
-          <nav className="flex items-center gap-8 text-sm text-muted">
+          <nav className="flex items-center gap-8 text-base font-medium text-muted">
             {links.map((link) => {
               const active = pathname.startsWith(link.href);
               return (
@@ -196,21 +182,15 @@ export default function NavBar() {
             })}
           </nav>
 
-          <div className="flex items-center justify-end gap-4">
-            <Link
-              href="/account"
-              aria-label="Account"
-              className="text-muted transition-colors hover:text-foreground"
-            >
-              <UserIcon className="h-[18px] w-[18px]" />
-            </Link>
+          <div className="flex items-center justify-end gap-5">
+            <AccountMenu />
             <button
               type="button"
               aria-label="Cart"
               onClick={() => setCartOpen(true)}
               className="relative text-muted transition-colors hover:text-foreground"
             >
-              <CartIcon className="h-[18px] w-[18px]" />
+              <CartIcon className="h-6 w-6" />
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
                 0
               </span>
@@ -222,17 +202,15 @@ export default function NavBar() {
         <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3 sm:hidden">
           {hamburger}
           <div className="justify-self-center">{logo}</div>
-          <div className="flex items-center justify-self-end gap-4">
-            <Link href="/account" aria-label="Account" className="text-muted">
-              <UserIcon className="h-[18px] w-[18px]" />
-            </Link>
+          <div className="flex items-center justify-self-end gap-5">
+            <AccountMenu />
             <button
               type="button"
               aria-label="Cart"
               onClick={() => setCartOpen(true)}
               className="relative text-muted"
             >
-              <CartIcon className="h-[18px] w-[18px]" />
+              <CartIcon className="h-6 w-6" />
               <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-accent font-mono text-[9px] text-background">
                 0
               </span>
