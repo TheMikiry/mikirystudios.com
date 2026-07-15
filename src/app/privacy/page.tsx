@@ -32,9 +32,10 @@ export default function PrivacyPage() {
           <ul className="flex flex-col gap-2">
             <li>
               <strong className="text-foreground">Account info</strong> —
-              your email address, and either a password (stored hashed, we
-              never see it in plain text) or, if you sign in with Google,
-              your name, email, and profile picture as provided by Google.
+              your email address (used only to send you a one-time sign-in
+              code — we don&apos;t use or store passwords), or, if you sign
+              in with Google, your name, email, and profile picture as
+              provided by Google.
             </li>
             <li>
               <strong className="text-foreground">Download/order history</strong>{" "}

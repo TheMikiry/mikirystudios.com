@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import OtpCodeInput from "./OtpCodeInput";
+
+const RESEND_COOLDOWN_SECONDS = 30;
 
 function GoogleIcon() {
   return (
@@ -26,6 +30,44 @@ function GoogleIcon() {
   );
 }
 
+function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  );
+}
+
+function SpinnerIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" {...props}>
+      <circle
+        cx="12"
+        cy="12"
+        r="9"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        className="opacity-25"
+      />
+      <path
+        d="M21 12a9 9 0 0 0-9-9"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        className="opacity-90"
+      />
+    </svg>
+  );
+}
+
 export default function AuthForm({
   variant = "card",
   onSignedIn,
@@ -34,43 +76,91 @@ export default function AuthForm({
   onSignedIn?: () => void;
 }) {
   const supabase = createClient();
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+  const [step, setStep] = useState<"email" | "code">("email");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [resetKey, setResetKey] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
-  async function handleSubmit(e: FormEvent) {
+  const cooldownActive = resendCooldown > 0;
+
+  useEffect(() => {
+    if (!cooldownActive) return;
+    const id = setInterval(() => {
+      setResendCooldown((s) => Math.max(0, s - 1));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [cooldownActive]);
+
+  async function sendCode() {
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: { shouldCreateUser: true },
+    });
+    return error;
+  }
+
+  async function handleSendCode(e: FormEvent) {
     e.preventDefault();
     setError(null);
-    setMessage(null);
-    setLoading(true);
-
-    if (mode === "sign-in") {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      setLoading(false);
-      if (error) {
-        setError(error.message);
-        return;
-      }
-      onSignedIn?.();
-    } else {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${location.origin}/auth/callback` },
-      });
-      setLoading(false);
-      if (error) {
-        setError(error.message);
-        return;
-      }
-      setMessage("Check your email to confirm your account.");
+    setSubmitting(true);
+    const error = await sendCode();
+    setSubmitting(false);
+    if (error) {
+      setError(error.message);
+      return;
     }
+    setStep("code");
+    setCode("");
+    setResetKey((k) => k + 1);
+    setResendCooldown(RESEND_COOLDOWN_SECONDS);
+  }
+
+  async function handleVerify(fullCode: string) {
+    setError(null);
+    setSubmitting(true);
+    const { error } = await supabase.auth.verifyOtp({
+      email,
+      token: fullCode,
+      type: "email",
+    });
+    setSubmitting(false);
+    if (error) {
+      setError(error.message);
+      setCode("");
+      setResetKey((k) => k + 1);
+      return;
+    }
+    onSignedIn?.();
+  }
+
+  function handleCodeComplete(fullCode: string) {
+    if (submitting) return;
+    handleVerify(fullCode);
+  }
+
+  function handleChangeEmail() {
+    setStep("email");
+    setCode("");
+    setError(null);
+    setResendCooldown(0);
+  }
+
+  async function handleResend() {
+    if (cooldownActive || submitting) return;
+    setError(null);
+    setSubmitting(true);
+    const error = await sendCode();
+    setSubmitting(false);
+    if (error) {
+      setError(error.message);
+      return;
+    }
+    setCode("");
+    setResetKey((k) => k + 1);
+    setResendCooldown(RESEND_COOLDOWN_SECONDS);
   }
 
   async function handleGoogle() {
@@ -89,86 +179,102 @@ export default function AuthForm({
           : "flex flex-col gap-5"
       }
     >
-      <button
-        type="button"
-        onClick={handleGoogle}
-        className="flex items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium transition-colors hover:border-foreground"
-      >
-        <GoogleIcon />
-        Continue with Google
-      </button>
+      {step === "email" ? (
+        <>
+          <button
+            type="button"
+            onClick={handleGoogle}
+            className="flex items-center justify-center gap-3 rounded-xl border border-border bg-background px-4 py-3 text-sm font-medium transition-colors hover:border-foreground"
+          >
+            <GoogleIcon />
+            Continue with Google
+          </button>
 
-      <div className="flex items-center gap-3 text-sm text-muted">
-        <span className="h-px flex-1 bg-border" />
-        or
-        <span className="h-px flex-1 bg-border" />
-      </div>
+          <div className="flex items-center gap-3 text-sm text-muted">
+            <span className="h-px flex-1 bg-border" />
+            or
+            <span className="h-px flex-1 bg-border" />
+          </div>
 
-      <div className="flex rounded-full border border-border p-1 text-sm">
-        <button
-          type="button"
-          onClick={() => setMode("sign-in")}
-          className={`flex-1 rounded-full py-2 transition-colors ${
-            mode === "sign-in"
-              ? "bg-accent text-background"
-              : "text-muted hover:text-foreground"
-          }`}
-        >
-          Sign in
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode("sign-up")}
-          className={`flex-1 rounded-full py-2 transition-colors ${
-            mode === "sign-up"
-              ? "bg-accent text-background"
-              : "text-muted hover:text-foreground"
-          }`}
-        >
-          Create account
-        </button>
-      </div>
+          <form onSubmit={handleSendCode} className="flex flex-col gap-4">
+            <div className="relative">
+              <input
+                id="email"
+                type="email"
+                required
+                autoFocus
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={submitting}
+                className="w-full rounded-full border border-border bg-background py-3 pl-5 pr-14 text-sm outline-none transition-colors focus:border-accent disabled:opacity-60"
+              />
+              <button
+                type="submit"
+                aria-label="Continue"
+                disabled={submitting}
+                className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-accent text-background transition-transform hover:scale-105 active:scale-95 disabled:opacity-60"
+              >
+                {submitting ? (
+                  <SpinnerIcon className="h-4 w-4 animate-spin" />
+                ) : (
+                  <ArrowRightIcon className="h-4 w-4" />
+                )}
+              </button>
+            </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <div>
-          <input
-            id="email"
-            type="email"
-            required
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+            {error && <p className="text-xs text-red-400">{error}</p>}
+          </form>
+        </>
+      ) : (
+        <div className="flex flex-col gap-5">
+          <div>
+            <p className="font-display text-xl font-bold uppercase tracking-tight">
+              Enter code
+            </p>
+            <p className="mt-1 text-sm text-muted">
+              Sent to <span className="text-foreground">{email}</span>{" "}
+              <button
+                type="button"
+                onClick={handleChangeEmail}
+                className="text-accent transition-colors hover:underline"
+              >
+                Change
+              </button>
+            </p>
+          </div>
+
+          <OtpCodeInput
+            key={resetKey}
+            value={code}
+            onChange={setCode}
+            onComplete={handleCodeComplete}
+            disabled={submitting}
+            hasError={!!error}
           />
-        </div>
-        <div>
-          <input
-            id="password"
-            placeholder="Password"
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
-          />
-        </div>
 
-        {error && <p className="text-xs text-red-400">{error}</p>}
-        {message && <p className="text-xs text-accent">{message}</p>}
+          {error && <p className="text-xs text-red-400">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-background transition-transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60"
-        >
-          {loading
-            ? "Please wait…"
-            : mode === "sign-in"
-              ? "Sign in"
-              : "Create account"}
-        </button>
-      </form>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={cooldownActive || submitting}
+            className="self-start text-xs text-muted transition-colors hover:text-foreground disabled:opacity-60"
+          >
+            {cooldownActive
+              ? `Resend code in ${resendCooldown}s`
+              : "Resend code"}
+          </button>
+
+          <p className="text-xs text-muted">
+            By continuing, you agree to our{" "}
+            <Link href="/terms" className="text-accent hover:underline">
+              Terms of service
+            </Link>
+            .
+          </p>
+        </div>
+      )}
     </div>
   );
 }

@@ -152,7 +152,7 @@ export default function AccountMenu() {
               <>
                 <div className="mb-4 flex items-center justify-between">
                   <p className="font-display text-lg font-bold uppercase tracking-tight">
-                    Sign in
+                    Continue
                   </p>
                   <button
                     type="button"
