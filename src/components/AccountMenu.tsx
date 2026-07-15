@@ -115,63 +115,48 @@ export default function AccountMenu() {
               <div className="h-40 animate-pulse rounded-xl border border-border bg-surface" />
             ) : user ? (
               <>
-                <div className="mb-1 flex items-center justify-between">
-                  <p className="font-display text-2xl font-bold uppercase tracking-tight">
+                <div className="relative mb-1 flex items-center">
+                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground">
                     Account
                   </p>
                   <button
                     type="button"
                     aria-label="Close"
                     onClick={() => setOpen(false)}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
+                    className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
                   >
                     <CloseIcon className="h-4 w-4" />
                   </button>
                 </div>
-                <p className="mb-4 truncate text-sm text-muted">
+                <p className="mb-4 truncate text-left text-base font-medium text-muted">
                   {user.email}
                 </p>
-                <div className="flex flex-col divide-y divide-border">
+                <div className="flex flex-col items-center divide-y divide-border">
                   <Link
                     href="/account/profile"
                     onClick={() => setOpen(false)}
-                    className="py-3 text-sm font-medium transition-colors hover:text-accent"
+                    className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
                   >
                     Profile
                   </Link>
                   <Link
                     href="/account/library"
                     onClick={() => setOpen(false)}
-                    className="py-3 text-sm font-medium transition-colors hover:text-accent"
+                    className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
                   >
                     Library
                   </Link>
                 </div>
               </>
             ) : (
-              <>
-                <div className="mb-4 flex items-center justify-between">
-                  <p className="font-display text-lg font-bold uppercase tracking-tight">
-                    Continue
-                  </p>
-                  <button
-                    type="button"
-                    aria-label="Close"
-                    onClick={() => setOpen(false)}
-                    className="flex h-7 w-7 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
-                  >
-                    <CloseIcon className="h-4 w-4" />
-                  </button>
-                </div>
-                <AuthForm
-                  variant="plain"
-                  onSignedIn={() => {
-                    setOpen(false);
-                    router.push("/account");
-                    router.refresh();
-                  }}
-                />
-              </>
+              <AuthForm
+                variant="plain"
+                onClose={() => setOpen(false)}
+                onSignedIn={() => {
+                  setOpen(false);
+                  router.refresh();
+                }}
+              />
             )}
           </motion.div>
         )}

@@ -1,6 +1,5 @@
 import Reveal from "@/components/Reveal";
 import PlaceholderCover from "@/components/PlaceholderCover";
-import ContactForm from "@/components/ContactForm";
 import FrameCorners from "@/components/FrameCorners";
 
 const socials = [
@@ -57,25 +56,6 @@ export default function AboutPage() {
           </div>
         </Reveal>
       </div>
-
-      <section id="contact" className="mt-20 scroll-mt-24 border-t border-border pt-12">
-        <Reveal>
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">
-            Contact
-          </p>
-          <h2 className="mt-3 font-display text-2xl font-bold uppercase tracking-tight text-balance">
-            Get in touch
-          </h2>
-          <p className="mt-3 max-w-xl text-sm text-muted">
-            Questions about mkrHub, work inquiries, or anything else — send a
-            message.
-          </p>
-        </Reveal>
-
-        <Reveal delay={0.1} className="mt-8">
-          <ContactForm />
-        </Reveal>
-      </section>
     </div>
   );
 }

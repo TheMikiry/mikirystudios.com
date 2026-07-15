@@ -46,6 +46,21 @@ function ArrowRightIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      {...props}
+    >
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  );
+}
+
 function SpinnerIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" {...props}>
@@ -71,9 +86,11 @@ function SpinnerIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function AuthForm({
   variant = "card",
   onSignedIn,
+  onClose,
 }: {
   variant?: "card" | "plain";
   onSignedIn?: () => void;
+  onClose?: () => void;
 }) {
   const supabase = createClient();
   const [step, setStep] = useState<"email" | "code">("email");
@@ -179,6 +196,22 @@ export default function AuthForm({
           : "flex flex-col gap-5"
       }
     >
+      {onClose && (
+        <div className="relative flex items-center">
+          <p className="font-display text-lg font-bold uppercase tracking-tight">
+            {step === "email" ? "Sign in" : "Enter code"}
+          </p>
+          <button
+            type="button"
+            aria-label="Close"
+            onClick={onClose}
+            className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
+          >
+            <CloseIcon className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {step === "email" ? (
         <>
           <button
@@ -207,7 +240,7 @@ export default function AuthForm({
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 disabled={submitting}
-                className="w-full rounded-full border border-border bg-background py-3 pl-5 pr-14 text-sm outline-none transition-colors focus:border-accent disabled:opacity-60"
+                className="w-full rounded-full border border-border bg-background py-3 pl-5 pr-14 text-base outline-none transition-colors focus:border-accent disabled:opacity-60 sm:text-sm"
               />
               <button
                 type="submit"
@@ -227,22 +260,17 @@ export default function AuthForm({
           </form>
         </>
       ) : (
-        <div className="flex flex-col gap-5">
-          <div>
-            <p className="font-display text-xl font-bold uppercase tracking-tight">
-              Enter code
-            </p>
-            <p className="mt-1 text-sm text-muted">
-              Sent to <span className="text-foreground">{email}</span>{" "}
-              <button
-                type="button"
-                onClick={handleChangeEmail}
-                className="text-accent transition-colors hover:underline"
-              >
-                Change
-              </button>
-            </p>
-          </div>
+        <div className="flex flex-col items-center gap-5 text-center">
+          <p className="text-sm text-muted">
+            Sent to <span className="text-foreground">{email}</span>{" "}
+            <button
+              type="button"
+              onClick={handleChangeEmail}
+              className="text-accent transition-colors hover:underline"
+            >
+              Change
+            </button>
+          </p>
 
           <OtpCodeInput
             key={resetKey}
@@ -259,7 +287,7 @@ export default function AuthForm({
             type="button"
             onClick={handleResend}
             disabled={cooldownActive || submitting}
-            className="self-start text-xs text-muted transition-colors hover:text-foreground disabled:opacity-60"
+            className="text-xs text-muted transition-colors hover:text-foreground disabled:opacity-60"
           >
             {cooldownActive
               ? `Resend code in ${resendCooldown}s`
@@ -270,6 +298,10 @@ export default function AuthForm({
             By continuing, you agree to our{" "}
             <Link href="/terms" className="text-accent hover:underline">
               Terms of service
+            </Link>{" "}
+            and{" "}
+            <Link href="/privacy" className="text-accent hover:underline">
+              Privacy policy
             </Link>
             .
           </p>

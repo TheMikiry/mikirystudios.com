@@ -13,7 +13,7 @@ export default async function LibraryPage() {
   return (
     <div>
       <Reveal>
-        <h2 className="font-display text-2xl font-bold uppercase tracking-tight">
+        <h2 className="font-display text-3xl font-bold uppercase tracking-tight">
           Library
         </h2>
         <p className="mt-2 text-sm text-muted">
@@ -21,9 +21,9 @@ export default async function LibraryPage() {
         </p>
       </Reveal>
 
-      <Reveal delay={0.1} className="mt-6">
+      <Reveal delay={0.1} className="mt-8">
         {!orders || orders.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-muted">
+          <div className="rounded-2xl border border-dashed border-border p-12 text-center text-sm text-muted">
             No downloads yet.{" "}
             <Link href="/store" className="text-accent">
               Browse the store
@@ -37,10 +37,10 @@ export default async function LibraryPage() {
               return (
                 <div
                   key={order.id}
-                  className="flex items-center justify-between gap-4 px-5 py-4"
+                  className="flex items-center justify-between gap-4 px-6 py-5"
                 >
                   <div>
-                    <p className="text-sm font-medium">
+                    <p className="text-base font-medium">
                       {tool?.name ?? order.product_slug}
                     </p>
                     <p className="mt-0.5 font-mono text-xs text-muted">
@@ -55,7 +55,7 @@ export default async function LibraryPage() {
                     </span>
                     <Link
                       href={`/store/${order.product_slug}`}
-                      className="text-sm font-medium text-accent"
+                      className="rounded-full border border-border px-4 py-2 text-sm font-medium text-accent transition-colors hover:border-accent"
                     >
                       Download again
                     </Link>

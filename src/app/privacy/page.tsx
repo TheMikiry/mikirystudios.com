@@ -144,7 +144,7 @@ export default function PrivacyPage() {
           </h2>
           <p>
             Questions about your data — reach out via the{" "}
-            <a href="/about#contact" className="text-accent">
+            <a href="/contact" className="text-accent">
               contact form
             </a>{" "}
             or at mikirystudios@gmail.com.

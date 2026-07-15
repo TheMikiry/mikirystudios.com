@@ -104,7 +104,7 @@ export default function TermsPage() {
           </h2>
           <p>
             Questions — reach out via the{" "}
-            <a href="/about#contact" className="text-accent">
+            <a href="/contact" className="text-accent">
               contact form
             </a>{" "}
             or at mikirystudios@gmail.com.

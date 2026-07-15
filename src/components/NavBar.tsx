@@ -13,6 +13,7 @@ const links = [
   { href: "/portfolio", label: "Portfolio" },
   { href: "/store", label: "Store" },
   { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 const socials = [

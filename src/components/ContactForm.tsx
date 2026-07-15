@@ -3,6 +3,10 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 
+const fieldClass =
+  "mt-1.5 w-full rounded-xl border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-accent";
+const labelClass = "font-mono text-xs uppercase tracking-wide text-muted";
+
 export default function ContactForm() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,34 +43,48 @@ export default function ContactForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex flex-col gap-5 rounded-2xl border border-border bg-surface p-6 sm:p-8"
+      className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-5 sm:p-6"
     >
-      <div>
-        <label htmlFor="name" className="font-mono text-xs uppercase tracking-wide text-muted">
-          Name
-        </label>
-        <input
-          id="name"
-          name="name"
-          type="text"
-          required
-          className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
-        />
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <div className="flex-1">
+          <label htmlFor="name" className={labelClass}>
+            Name
+          </label>
+          <input id="name" name="name" type="text" required className={fieldClass} />
+        </div>
+        <div className="flex-1">
+          <label htmlFor="lastName" className={labelClass}>
+            Last name
+          </label>
+          <input
+            id="lastName"
+            name="lastName"
+            type="text"
+            required
+            className={fieldClass}
+          />
+        </div>
       </div>
       <div>
-        <label htmlFor="email" className="font-mono text-xs uppercase tracking-wide text-muted">
+        <label htmlFor="email" className={labelClass}>
           Email
         </label>
+        <input id="email" name="email" type="email" required className={fieldClass} />
+      </div>
+      <div>
+        <label htmlFor="subject" className={labelClass}>
+          Subject
+        </label>
         <input
-          id="email"
-          name="email"
-          type="email"
+          id="subject"
+          name="subject"
+          type="text"
           required
-          className="mt-3 w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+          className={fieldClass}
         />
       </div>
       <div>
-        <label htmlFor="message" className="font-mono text-xs uppercase tracking-wide text-muted">
+        <label htmlFor="message" className={labelClass}>
           Message
         </label>
         <textarea
@@ -74,7 +92,7 @@ export default function ContactForm() {
           name="message"
           required
           rows={5}
-          className="mt-3 w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+          className={`${fieldClass} resize-y`}
         />
       </div>
       {error && <p className="text-xs text-red-400">{error}</p>}
