@@ -260,6 +260,12 @@ content_path = "./supabase/templates/confirmation.html"
 subject = "Your sign-in code: {{ .Token }}"
 content_path = "./supabase/templates/magic_link.html"
 
+# Fires when a signed-in user changes their email via EditEmailButton.tsx —
+# sent to the NEW address, sign-in stays on the old one until confirmed.
+[auth.email.template.email_change]
+subject = "Confirm your new email address"
+content_path = "./supabase/templates/email_change.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true
