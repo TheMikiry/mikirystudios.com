@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
+import { GLASS_PANEL } from "@/lib/ui";
 import AuthForm from "./AuthForm";
 
 function UserIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -47,8 +49,16 @@ export default function AccountMenu() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [checkedAuth, setCheckedAuth] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [coords, setCoords] = useState({ top: 0, right: 0 });
   const panelRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only mount check, required for the portal target (document.body) to exist.
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
@@ -64,9 +74,12 @@ export default function AccountMenu() {
   useEffect(() => {
     if (!open) return;
     function handleClick(e: MouseEvent) {
+      const target = e.target as Node;
       if (
         wrapperRef.current &&
-        !wrapperRef.current.contains(e.target as Node)
+        !wrapperRef.current.contains(target) &&
+        panelRef.current &&
+        !panelRef.current.contains(target)
       ) {
         setOpen(false);
       }
@@ -84,12 +97,24 @@ export default function AccountMenu() {
 
   const initial = user?.email?.[0]?.toUpperCase() ?? "";
 
+  function toggleOpen() {
+    if (!open && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.bottom + 12,
+        right: window.innerWidth - rect.right,
+      });
+    }
+    setOpen((v) => !v);
+  }
+
   return (
     <div ref={wrapperRef} className="relative">
       <button
+        ref={triggerRef}
         type="button"
         aria-label="Account"
-        onClick={() => setOpen((v) => !v)}
+        onClick={toggleOpen}
         className="text-muted transition-colors hover:text-foreground"
       >
         {user ? (
@@ -101,66 +126,71 @@ export default function AccountMenu() {
         )}
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            ref={panelRef}
-            initial={{ opacity: 0, y: -8, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.98 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute right-0 top-[calc(100%+12px)] z-[70] w-80 max-w-[88vw] rounded-2xl border border-border bg-background/95 p-5 shadow-2xl backdrop-blur-md"
-          >
-            {!checkedAuth ? (
-              <div className="h-40 animate-pulse rounded-xl border border-border bg-surface" />
-            ) : user ? (
-              <>
-                <div className="relative mb-1 flex items-center">
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground">
-                    Account
-                  </p>
-                  <button
-                    type="button"
-                    aria-label="Close"
-                    onClick={() => setOpen(false)}
-                    className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
-                  >
-                    <CloseIcon className="h-4 w-4" />
-                  </button>
-                </div>
-                <p className="mb-4 truncate text-left text-base font-medium text-muted">
-                  {user.email}
-                </p>
-                <div className="flex flex-col items-center divide-y divide-border">
-                  <Link
-                    href="/account/profile"
-                    onClick={() => setOpen(false)}
-                    className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
-                  >
-                    Profile
-                  </Link>
-                  <Link
-                    href="/account/library"
-                    onClick={() => setOpen(false)}
-                    className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
-                  >
-                    Library
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <AuthForm
-                variant="plain"
-                onClose={() => setOpen(false)}
-                onSignedIn={() => {
-                  setOpen(false);
-                  router.refresh();
-                }}
-              />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                ref={panelRef}
+                initial={{ opacity: 0, y: -8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                style={{ top: coords.top, right: coords.right }}
+                className={`fixed z-[70] w-80 max-w-[88vw] rounded-2xl border border-border p-5 shadow-2xl ${GLASS_PANEL}`}
+              >
+                {!checkedAuth ? (
+                  <div className="h-40 animate-pulse rounded-xl border border-border bg-surface" />
+                ) : user ? (
+                  <>
+                    <div className="relative mb-1 flex items-center">
+                      <p className="font-mono text-xs uppercase tracking-[0.2em] text-foreground">
+                        Account
+                      </p>
+                      <button
+                        type="button"
+                        aria-label="Close"
+                        onClick={() => setOpen(false)}
+                        className="absolute right-0 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full border border-border text-muted transition-colors hover:text-foreground"
+                      >
+                        <CloseIcon className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <p className="mb-4 truncate text-left text-base font-medium text-muted">
+                      {user.email}
+                    </p>
+                    <div className="flex flex-col items-center divide-y divide-border">
+                      <Link
+                        href="/account/profile"
+                        onClick={() => setOpen(false)}
+                        className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
+                      >
+                        Profile
+                      </Link>
+                      <Link
+                        href="/account/library"
+                        onClick={() => setOpen(false)}
+                        className="w-full py-4 text-center text-base font-medium transition-colors hover:text-accent"
+                      >
+                        Library
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <AuthForm
+                    variant="plain"
+                    onClose={() => setOpen(false)}
+                    onSignedIn={() => {
+                      setOpen(false);
+                      router.refresh();
+                    }}
+                  />
+                )}
+              </motion.div>
             )}
-          </motion.div>
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </div>
   );
 }

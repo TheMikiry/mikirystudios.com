@@ -16,9 +16,6 @@ export default async function LibraryPage() {
         <h2 className="font-display text-3xl font-bold uppercase tracking-tight">
           Library
         </h2>
-        <p className="mt-2 text-sm text-muted">
-          Everything you&apos;ve claimed from the store — redownload anytime.
-        </p>
       </Reveal>
 
       <Reveal delay={0.1} className="mt-8">

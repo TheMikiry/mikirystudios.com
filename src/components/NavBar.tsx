@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { XIcon, InstagramIcon, YouTubeIcon, DiscordIcon } from "./SocialIcons";
 import CartDrawer from "./CartDrawer";
 import AccountMenu from "./AccountMenu";
+import { GLASS_PANEL } from "@/lib/ui";
 
 const links = [
   { href: "/portfolio", label: "Portfolio" },
@@ -69,7 +70,7 @@ function MobileMenu({
             animate={{ x: 0 }}
             exit={{ x: "-100%" }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 left-0 z-[65] flex w-72 max-w-[82vw] flex-col border-r border-border bg-background/80 backdrop-blur-md sm:hidden"
+            className={`fixed inset-y-0 left-0 z-[65] flex w-72 max-w-[82vw] flex-col border-r border-border sm:hidden ${GLASS_PANEL}`}
           >
             <nav className="flex flex-1 flex-col gap-1 px-6 py-8 text-xl font-semibold">
               {links.map((link) => {
@@ -160,7 +161,7 @@ export default function NavBar() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/90 backdrop-blur-md">
       <div className="mx-auto max-w-6xl px-6 py-4">
         {/* Desktop / tablet */}
         <div className="hidden items-center gap-4 sm:grid sm:grid-cols-[1fr_auto_1fr]">

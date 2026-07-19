@@ -1,6 +1,6 @@
 import Reveal from "@/components/Reveal";
-import SignOutButton from "@/components/SignOutButton";
 import EditEmailButton from "@/components/EditEmailButton";
+import NewsletterToggle from "@/components/NewsletterToggle";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function ProfilePage() {
@@ -19,24 +19,19 @@ export default async function ProfilePage() {
 
       <Reveal delay={0.1} className="mt-8">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-base font-semibold">Contact</p>
+          <p className="text-base font-semibold">Email</p>
           {user?.email && <EditEmailButton currentEmail={user.email} />}
         </div>
 
         <div className="mt-4 rounded-2xl border border-border bg-surface p-5 sm:p-6">
-          <p className="font-mono text-xs uppercase tracking-wide text-muted">
-            Email
-          </p>
-          <p className="mt-2 text-sm">{user?.email}</p>
+          <p className="text-sm">{user?.email}</p>
         </div>
+      </Reveal>
 
-        <div className="mt-5 flex items-center justify-end gap-2 text-sm text-muted">
-          <SignOutButton className="transition-colors hover:text-red-400" />
-          <span>/</span>
-          <SignOutButton
-            allDevices
-            className="transition-colors hover:text-red-400"
-          />
+      <Reveal delay={0.15} className="mt-10">
+        <p className="text-base font-semibold">Newsletter</p>
+        <div className="mt-4 rounded-2xl border border-border bg-surface p-5 sm:p-6">
+          {user?.id && <NewsletterToggle userId={user.id} />}
         </div>
       </Reveal>
     </div>

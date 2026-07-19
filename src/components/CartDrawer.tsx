@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { GLASS_PANEL } from "@/lib/ui";
 
 function CloseIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -73,7 +74,7 @@ export default function CartDrawer({
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-y-0 right-0 z-[65] flex w-96 max-w-[88vw] flex-col border-l border-border bg-background/95 backdrop-blur-md"
+            className={`fixed inset-y-0 right-0 z-[65] flex w-96 max-w-[88vw] flex-col border-l border-border ${GLASS_PANEL}`}
           >
             <div className="flex items-center justify-between border-b border-border px-6 py-5">
               <div className="flex items-center gap-6">
